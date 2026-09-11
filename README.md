@@ -167,7 +167,17 @@ se ve bien al pegar el link en un chat.
 
 El contenido de este catálogo (servicios, diferenciadores, evidencia técnica) está pensado para
 poder convertirse en una propuesta comercial/cotización real, con el mismo formato de las
-propuestas que PIRA ya ha presentado a clientes. Ese proceso y su plantilla **viven fuera de
-este repo público**, en `D:\02A_TIC_GIT\REDES\02_COTIZACIONES\` (no se sube a GitHub porque
-incluye lenguaje comercial y estructuras de precio internas). Ver
-`02_COTIZACIONES/00_PROCESO_cotizacion_desde_catalogo.md` para los pasos.
+propuestas que PIRA ya ha presentado a clientes. Ese proceso **vive fuera de este repo público**,
+en `D:\02A_TIC_GIT\REDES\02_COTIZACIONES\` (no se sube a GitHub porque incluye lenguaje comercial,
+estructuras de precio internas y, cuando se usa con un cliente real, sus datos).
+
+Método recomendado (v4): un **generador de PDF institucional** en
+`02_COTIZACIONES/generador/` (Node + Playwright + PyMuPDF) que toma un archivo de datos por
+cliente y produce la propuesta ya diagramada con la misma identidad visual de este catálogo
+(colores, tipografías, logos, portada a sangre completa), con auto-selección de la norma
+aplicable según el sector del cliente. Ver `02_COTIZACIONES/generador/README.md` para el uso y
+el esquema de datos.
+
+También queda, como referencia de contenido y cláusulas (método anterior, ya no el
+recomendado), `02_COTIZACIONES/PLANTILLA_COTIZACION_PIRA.docx` +
+`02_COTIZACIONES/00_PROCESO_cotizacion_desde_catalogo.md`.
