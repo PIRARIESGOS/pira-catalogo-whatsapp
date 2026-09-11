@@ -29,7 +29,7 @@ WHAPP/
 └── README.md                este archivo
 ```
 
-## Contenido de la página (v2 — recorrido completo, no solo listas)
+## Contenido de la página (v3 — recorrido completo + documentación de alertas + IA + contacto)
 
 1. **Hero** — gancho + 4 insignias (Consultoría legal · Tecnología con IA · LMS de
    capacitación · Oficial de cumplimiento externo) + CTA WhatsApp.
@@ -37,16 +37,51 @@ WHAPP/
    vinculaciones a ciegas.
 3. **La diferencia PIRA** — los 4 pilares + comparativo explícito "consultoría tradicional vs.
    PIRA RIESGOS".
-4. **La plataforma en acción** — capturas reales agrupadas por tema: gestión de riesgos
-   (matrices GTC-45, SAGRILAFT/ISO 31000/COSO ERM), cumplimiento LA/FT (listas restrictivas,
-   fuentes oficiales, automatización con la API de OFAC), PTEE y ética empresarial (Red de
-   Confianza: operaciones inusuales, ROS-UIAF, regalos y atenciones, conflictos de interés),
-   y SG-SST (Decreto 1072/2015).
-5. **Capacitación (LMS)** — captura real del curso "SAGRILAFT y PTEE", con nota mínima,
-   intentos, vigencia y certificación.
+4. **La plataforma en acción** — capturas reales agrupadas por tema:
+   - Gestión de riesgos (matrices GTC-45, SAGRILAFT/ISO 31000/COSO ERM, heatmap LA/FT
+     probabilidad×impacto, factores y controles con % de cobertura).
+   - Cumplimiento LA/FT (listas restrictivas, fuentes oficiales, automatización con la API de
+     OFAC).
+   - **Documentación de alertas de principio a fin** (nuevo): un reporte real de resultado de
+     búsqueda en listas (con nombre y cédula difuminados), la pantalla de revisión de
+     cumplimiento, el formulario de decisión con justificación obligatoria, y el historial
+     exportable con contadores.
+   - PTEE y ética empresarial (Red de Confianza: operaciones inusuales, ROS-UIAF, regalos y
+     atenciones —con formulario real de registro—, conflictos de interés).
+   - SG-SST (Decreto 1072/2015).
+   - **Automatización y analítica con IA** (nuevo): segmentación de clientes con clustering
+     K-means y el correo automático de resumen mensual de consultas.
+5. **Capacitación (LMS)** — captura real del curso "SAGRILAFT y PTEE" (config, nota mínima,
+   intentos, vigencia), una actividad de microaprendizaje, y el correo automático de
+   certificado (nombre difuminado).
 6. **Tercerización** — servicio de oficial de cumplimiento externo.
 7. **Ejemplo de integración de API** — para el equipo técnico del cliente potencial.
-8. **CTA final** con WhatsApp, correo y web.
+8. **Contáctenos** — accesos rápidos (WhatsApp, pirariesgos.com, correo) + un formulario propio
+   con los mismos campos del formulario de pirariesgos.com (Nombre, Empresa, Correo
+   corporativo, Teléfono/WhatsApp, Cargo, ¿Qué necesita?, Mensaje, honeypot anti-spam). Como
+   este sitio no tiene backend propio, el envío se resuelve abriendo el cliente de correo del
+   visitante con el mensaje ya redactado hacia `contactenos@pirariesgos.com` (ver
+   `js/script.js`).
+9. **CTA final** con WhatsApp, correo y web.
+
+### Formato de imagen (v3)
+
+Todas las capturas (`assets/screenshots/`) y el isotipo inline (`assets/logos/isotipo.webp`) se
+convirtieron a **WebP** para bajar el peso de la página (~45-55% más liviano que los PNG
+originales, navegación más fluida). Los favicons y `assets/og-image.png` se dejaron en **PNG a
+propósito**: son los formatos que garantizan compatibilidad con la tarjeta de vista previa al
+compartir el link (WhatsApp, redes) y con `apple-touch-icon`.
+
+### Nueva evidencia y redacción de datos personales (v3)
+
+Se agregaron 11 capturas/documentos nuevos (`prueba-09` a `prueba-19`), incluido un reporte real
+de búsqueda en listas (PDF → imagen) y dos capturas del módulo de revisión de cumplimiento que
+contenían el nombre y número de cédula reales de una persona. En los tres casos donde aparecía
+un dato personal identificable se **pixeló** esa región exacta (nombre completo y/o número de
+documento) antes de publicar — en el caso del PDF, las coordenadas se ubicaron con precisión
+usando la capa de texto del propio PDF (PyMuPDF `search_for`), no a ojo. El resto del contenido
+(montos, nombres de empresas/NIT, metodología, resultados) se dejó intacto porque no identifica
+a una persona natural. Mismo criterio de seguridad que se documenta más abajo para la v1.
 
 ## Cómo verla en su computador
 
@@ -127,3 +162,12 @@ listas/alertas — es un software contable aparte, sin ese módulo. No se usó c
 Pendiente de validar por el cliente: abrir el link desde el navegador interno de WhatsApp en un
 celular real (a veces se comporta distinto a Chrome) y confirmar que la tarjeta de vista previa
 se ve bien al pegar el link en un chat.
+
+## De este catálogo a una cotización (proceso aparte, no publicado)
+
+El contenido de este catálogo (servicios, diferenciadores, evidencia técnica) está pensado para
+poder convertirse en una propuesta comercial/cotización real, con el mismo formato de las
+propuestas que PIRA ya ha presentado a clientes. Ese proceso y su plantilla **viven fuera de
+este repo público**, en `D:\02A_TIC_GIT\REDES\02_COTIZACIONES\` (no se sube a GitHub porque
+incluye lenguaje comercial y estructuras de precio internas). Ver
+`02_COTIZACIONES/00_PROCESO_cotizacion_desde_catalogo.md` para los pasos.

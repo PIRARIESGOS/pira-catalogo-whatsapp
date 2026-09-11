@@ -57,6 +57,10 @@ a{ color:inherit; }
 .topbar__brand{ display:flex; align-items:center; gap:10px; text-decoration:none; color:#fff; font-family:var(--font-title); font-style:italic; font-size:1.05rem; letter-spacing:.02em; }
 .topbar__logo{ height:34px; width:auto; }
 .topbar__brand strong{ color:var(--verde); font-style:italic; }
+.topbar__links{ display:flex; align-items:center; gap:18px; font-size:.88rem; }
+.topbar__links a{ color:#D7D3EC; text-decoration:none; }
+.topbar__links a:hover{ color:#fff; }
+@media (max-width:640px){ .topbar__links{ display:none; } }
 
 /* ===== Buttons ===== */
 .btn{
@@ -70,6 +74,11 @@ a{ color:inherit; }
   box-shadow:0 10px 24px rgba(241,0,141,.35);
 }
 .btn--cta:hover{ transform:translateY(-2px); box-shadow:0 14px 28px rgba(241,0,141,.45); }
+.btn--outline{
+  background:transparent; color:var(--azul); border:2px solid var(--azul);
+  padding:12px 26px; font-size:.95rem;
+}
+.btn--outline:hover{ background:rgba(24,102,217,.08); transform:translateY(-2px); }
 .btn--small{ padding:8px 18px; font-size:.85rem; }
 .btn--large{ padding:16px 30px; font-size:1.05rem; }
 .icon-wa{ width:22px; height:22px; flex-shrink:0; }
@@ -236,6 +245,33 @@ a{ color:inherit; }
 .check{
   flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--verde);
   color:#0A2A22; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:.85rem;
+}
+
+/* ===== Contáctenos ===== */
+.contact-quicklinks{ display:flex; flex-wrap:wrap; gap:14px; margin-bottom:36px; }
+.contact-form{
+  display:grid; gap:18px; max-width:760px; background:var(--fondo-claro-2);
+  border:1px solid var(--borde-suave); border-radius:var(--radius); padding:28px;
+}
+.contact-form__row{ display:grid; gap:18px; grid-template-columns:1fr 1fr; }
+.contact-form label{
+  display:flex; flex-direction:column; gap:6px; font-size:.85rem; font-weight:700;
+  color:var(--texto-oscuro);
+}
+.contact-form input, .contact-form select, .contact-form textarea{
+  font-family:var(--font-body); font-size:.95rem; font-weight:400; color:var(--texto-oscuro);
+  border:1px solid var(--borde-suave); border-radius:10px; padding:11px 14px; background:#fff;
+  resize:vertical;
+}
+.contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus{
+  outline:2px solid var(--azul); outline-offset:1px;
+}
+.contact-form__full{ width:100%; }
+.contact-form__honeypot{ position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+.contact-form__note{ margin:0; font-size:.8rem; color:var(--gris-suave); }
+@media (max-width:640px){
+  .contact-form__row{ grid-template-columns:1fr; }
+  .contact-form{ padding:20px; }
 }
 
 /* ===== CTA final ===== */
