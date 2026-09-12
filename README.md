@@ -114,6 +114,25 @@ el nuevo link (controlan la vista previa que se ve al compartirlo).
 4. Guarde. Ese artículo es el que sus clientes verán y podrán abrir desde el chat.
 5. El código QR (`qr.png`) puede imprimirse o ponerse en tarjetas de presentación.
 
+## Formulario de Contáctenos: cómo queda configurado en un servidor con PHP
+
+`enviar.php` envía el formulario por **SMTP real con PHPMailer** (vendored en `libs/PHPMailer/`,
+sin Composer), usando el mismo buzón/servidor que ya usa `contacto.php` en pirariesgos.com. En
+la copia estática de GitHub Pages este archivo no se ejecuta — `js/script.js` detecta que la
+petición falla y cae de vuelta a abrir el correo del visitante (`mailto:`) como respaldo.
+
+**Para que funcione en un hosting real (por ejemplo `pirariesgos.com/catalogo/`):**
+
+1. Suba también las carpetas/archivos `libs/PHPMailer/`, `config.example.php` y `enviar.php`.
+2. En el servidor (nunca en Git), copie `config.example.php` como `config.local.php` en la misma
+   carpeta y complete ahí `SMTP_CLAVE` con la clave real del buzón — edítelo directo por
+   FTP/cPanel, nunca pegue esa clave en un chat ni la suba al repositorio. `config.local.php` ya
+   está en `.gitignore`.
+3. Si el host/usuario/puerto de correo cambia, ajústelo también en `config.local.php`
+   (`SMTP_HOST`, `SMTP_PUERTO`, `SMTP_SEGURIDAD`, `SMTP_USUARIO`).
+4. Pruebe el formulario en vivo una vez subido — sin `config.local.php` (o con `SMTP_CLAVE`
+   vacía) responde con un error controlado y el sitio cae al respaldo `mailto:`, no se rompe.
+
 ## Nota de seguridad importante (leída durante la construcción del sitio)
 
 Al revisar las capturas disponibles en el wiki de `pira-platform` para usarlas como "prueba

@@ -1,12 +1,17 @@
 <?php
 /**
- * Envío del formulario de Contáctenos del catálogo PIRA RIESGOS.
- * Requiere PHP con mail() habilitado en el hosting (mismo servidor que
- * atiende /contacto.php en pirariesgos.com). No necesita base de datos.
+ * Envío del formulario de Contáctenos del catálogo PIRA RIESGOS, por SMTP
+ * real con PHPMailer (mismo servidor de correo que usa contacto.php en
+ * pirariesgos.com — mail() sencillo cae en spam con mucha frecuencia).
  *
- * Si este archivo no existe o el hosting no soporta PHP (por ejemplo, la
- * copia estática publicada en GitHub Pages), js/script.js detecta el fallo
- * de red y cae de vuelta al enlace mailto: como respaldo.
+ * Requiere:
+ *  - libs/PHPMailer/ (ya incluido en este mismo folder, vendored, sin Composer).
+ *  - config.local.php en esta carpeta, con la clave real del buzón — NO se
+ *    sube a Git (ver .gitignore). Cópielo desde config.example.php.
+ *
+ * Si config.local.php no existe (por ejemplo, la copia estática publicada en
+ * GitHub Pages, que no tiene backend), responde con error controlado y
+ * js/script.js cae de vuelta al enlace mailto: como respaldo.
  */
 
 header('Content-Type: application/json; charset=UTF-8');
@@ -17,15 +22,32 @@ function responder($ok, $mensaje) {
     exit;
 }
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception as PHPMailerException;
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     responder(false, 'Método no permitido.');
 }
 
 // Honeypot anti-spam: si el campo oculto llegó lleno, es un bot — respondemos
-// éxito falso para no darle pistas, pero no enviamos nada.
+// éxito falso para no darle pistas, y ni siquiera cargamos PHPMailer.
 if (!empty($_POST['empresa_web'])) {
     responder(true, 'Recibido.');
 }
+
+$configPath = __DIR__ . '/config.local.php';
+if (!file_exists($configPath)) {
+    responder(false, 'Config no disponible en este servidor.');
+}
+require $configPath;
+
+if (SMTP_CLAVE === '') {
+    responder(false, 'Falta configurar la clave SMTP en config.local.php.');
+}
+
+require __DIR__ . '/libs/PHPMailer/Exception.php';
+require __DIR__ . '/libs/PHPMailer/PHPMailer.php';
+require __DIR__ . '/libs/PHPMailer/SMTP.php';
 
 function limpiar($valor) {
     $valor = trim((string) $valor);
@@ -48,30 +70,38 @@ if ($nombre === '' || $correo === '') {
 if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
     responder(false, 'El correo no es válido.');
 }
-$correoLimpio = str_replace(["\r", "\n"], '', $correo);
-
-$destinatario = 'contactenos@pirariesgos.com';
-$asunto = '=?UTF-8?B?' . base64_encode('Solicitud de asesoria (catalogo) - ' . $nombre . ($empresa !== '' ? ' - ' . $empresa : '')) . '?=';
 
 $cuerpo = "Nuevo mensaje desde el formulario del catálogo (pirariesgos.com/catalogo/)\n\n"
     . "Nombre: {$nombre}\n"
     . "Empresa: " . ($empresa !== '' ? $empresa : '-') . "\n"
-    . "Correo corporativo: {$correoLimpio}\n"
+    . "Correo corporativo: {$correo}\n"
     . "Teléfono / WhatsApp: " . ($telefono !== '' ? $telefono : '-') . "\n"
     . "Cargo: " . ($cargo !== '' ? $cargo : '-') . "\n"
     . "¿Qué necesita?: " . ($necesidad !== '' ? $necesidad : '-') . "\n\n"
     . "Mensaje:\n" . ($mensaje !== '' ? $mensaje : '-') . "\n";
 
-$cabeceras = [
-    'From: PIRA RIESGOS Web <no-responder@pirariesgos.com>',
-    'Reply-To: ' . $correoLimpio,
-    'Content-Type: text/plain; charset=UTF-8',
-];
+$mail = new PHPMailer(true);
+try {
+    $mail->isSMTP();
+    $mail->Host       = SMTP_HOST;
+    $mail->Port       = SMTP_PUERTO;
+    $mail->SMTPAuth   = true;
+    $mail->Username   = SMTP_USUARIO;
+    $mail->Password   = SMTP_CLAVE;
+    $mail->SMTPSecure = SMTP_SEGURIDAD === 'tls' ? PHPMailer::ENCRYPTION_STARTTLS : PHPMailer::ENCRYPTION_SMTPS;
+    $mail->CharSet    = 'UTF-8';
 
-$enviado = @mail($destinatario, $asunto, $cuerpo, implode("\r\n", $cabeceras));
+    $mail->setFrom(SMTP_USUARIO, 'PIRA RIESGOS - Catálogo');
+    $mail->addAddress(CATALOGO_DESTINATARIO);
+    $mail->addReplyTo($correo, $nombre);
 
-if ($enviado) {
+    $mail->Subject = 'Solicitud de asesoria (catalogo) - ' . $nombre . ($empresa !== '' ? ' - ' . $empresa : '');
+    $mail->isHTML(false);
+    $mail->Body = $cuerpo;
+
+    $mail->send();
     responder(true, 'Recibido. Le responderemos pronto.');
+} catch (PHPMailerException $e) {
+    error_log('enviar.php (catalogo) PHPMailer error: ' . $mail->ErrorInfo);
+    responder(false, 'No se pudo enviar en este momento.');
 }
-
-responder(false, 'No se pudo enviar en este momento.');
