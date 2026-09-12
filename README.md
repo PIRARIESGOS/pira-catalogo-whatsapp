@@ -144,6 +144,32 @@ petición falla y cae de vuelta a abrir el correo del visitante (`mailto:`) como
 4. Pruebe el formulario en vivo una vez subido — sin `config.local.php` (o con `SMTP_CLAVE`
    vacía) responde con un error controlado y el sitio cae al respaldo `mailto:`, no se rompe.
 
+### Diagnóstico rápido si el botón "no hace nada" o el correo no llega
+
+Antes de sospechar del código, pruebe el backend directo con `curl` (sirve para separar "el
+servidor no envía" de "el navegador tiene algo cacheado"):
+
+```bash
+# ¿Existe y responde enviar.php? (con GET debe dar error de método, no el código fuente)
+curl -s https://pirariesgos.com/catalogo/enviar.php
+
+# Envío real de prueba — si responde {"ok":true,...}, el correo salió del servidor
+curl -s -X POST https://pirariesgos.com/catalogo/enviar.php \
+  -d "nombre=Prueba" -d "correo=algo@ejemplo.com" -d "mensaje=Prueba real"
+```
+
+Mensajes típicos de `enviar.php` y qué significan:
+- `"Config no disponible en este servidor."` → falta `config.local.php` en el servidor.
+- `"Falta configurar la clave SMTP..."` → `config.local.php` existe pero `SMTP_CLAVE` sigue vacía.
+- `"No se pudo enviar en este momento."` → PHPMailer cargó y tenía clave, pero el servidor SMTP
+  rechazó el envío (revisar `error_log` del hosting: usuario/clave incorrectos, puerto bloqueado, etc.).
+- `{"ok":true,...}` → el servidor sí envió el correo; si el cliente dice que "no llega", revisar
+  spam/cuarentena del buzón destino, no el código.
+
+Si el backend responde bien pero el botón sigue sin hacer nada en el navegador, compare el
+`.js`/`.css`/`.html` que sirve el servidor contra el del repo (`curl` los tres y compárelos) antes
+de tocar nada — normalmente es la caché de 1 año explicada arriba, no un archivo mal subido.
+
 ## Nota de seguridad importante (leída durante la construcción del sitio)
 
 Al revisar las capturas disponibles en el wiki de `pira-platform` para usarlas como "prueba
