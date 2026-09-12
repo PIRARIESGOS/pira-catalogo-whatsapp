@@ -114,6 +114,17 @@ el nuevo link (controlan la vista previa que se ve al compartirlo).
 4. Guarde. Ese artículo es el que sus clientes verán y podrán abrir desde el chat.
 5. El código QR (`qr.png`) puede imprimirse o ponerse en tarjetas de presentación.
 
+## Caché del navegador en `pirariesgos.com/catalogo/` (importante al actualizar)
+
+Ese hosting manda `Cache-Control: public, max-age=31536000` (1 año) en `.js` y `.css`. Si solo
+reemplaza el archivo en el servidor, los visitantes que ya cargaron la página antes van a seguir
+viendo la versión vieja durante meses, sin ningún error visible — el navegador ni siquiera vuelve
+a preguntarle al servidor. Por eso `index.html` referencia los archivos con un número de versión
+(`css/styles.css?v=3`, `js/script.js?v=3`): **cada vez que cambie `styles.css` o `script.js`,
+suba también `index.html` y suba en 1 ese número** (`?v=4`, `?v=5`, …) para forzar a que todos
+los navegadores pidan la copia nueva. En GitHub Pages esto no hace falta (no cachea así de
+agresivo), pero no hace daño dejarlo.
+
 ## Formulario de Contáctenos: cómo queda configurado en un servidor con PHP
 
 `enviar.php` envía el formulario por **SMTP real con PHPMailer** (vendored en `libs/PHPMailer/`,
