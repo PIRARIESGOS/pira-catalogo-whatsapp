@@ -269,6 +269,16 @@ a{ color:inherit; }
 .contact-form__full{ width:100%; }
 .contact-form__honeypot{ position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
 .contact-form__note{ margin:0; font-size:.8rem; color:var(--gris-suave); }
+.contact-form__result{
+  margin-top:6px; padding:14px 16px; border-radius:10px; font-size:.92rem; line-height:1.5;
+}
+.contact-form__result a{ text-decoration:underline; }
+.contact-form__result--exito{
+  background:rgba(6,195,146,.12); border:1px solid rgba(6,195,146,.4); color:#0A4A3A;
+}
+.contact-form__result--error{
+  background:rgba(241,0,141,.08); border:1px solid rgba(241,0,141,.35); color:var(--texto-oscuro);
+}
 @media (max-width:640px){
   .contact-form__row{ grid-template-columns:1fr; }
   .contact-form{ padding:20px; }

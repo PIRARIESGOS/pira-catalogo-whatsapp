@@ -479,11 +479,13 @@ Content-Type: application/json
         </div>
         <button type="submit" class="btn btn--cta btn--large">Solicitar asesoría</button>
         <p class="contact-form__note">
-          Al enviar se abrirá su programa de correo con el mensaje ya redactado hacia
-          contactenos@pirariesgos.com — este mini-sitio no tiene servidor propio, así que la
-          entrega final la hace su propio cliente de correo, no un tercero.
+          Al enviar, intentamos entregarlo directo a contactenos@pirariesgos.com desde el
+          servidor. Si este sitio se abre desde una copia sin servidor (por ejemplo el catálogo
+          de WhatsApp), se abrirá su programa de correo con el mensaje ya redactado, como
+          respaldo.
         </p>
       </form>
+      <div class="contact-form__result" id="contacto-resultado" role="status" aria-live="polite" hidden></div>
     </div>
   </section>
 
